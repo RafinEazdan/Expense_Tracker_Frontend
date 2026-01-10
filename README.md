@@ -2,6 +2,14 @@
 
 A complete, production-ready frontend MVP for an Expense Tracker application built with React, TypeScript, and Tailwind CSS.
 
+> **Built with GitHub Copilot Pro** using the **Claude Sonnet 4.5** AI model.
+
+This is the frontend representation of the backend project:  
+🔗 **Backend Repository:** [https://github.com/RafinEazdan/Expense_Tracker](https://github.com/RafinEazdan/Expense_Tracker)
+
+🌐 **Live Demo:** [https://expense-tracker-self-mu-50.vercel.app/](https://expense-tracker-self-mu-50.vercel.app/)  
+Hosted on **Vercel**
+
 ## 🚀 Features
 
 ### Authentication
