@@ -22,6 +22,7 @@ import AddExpenseModal from '../components/AddExpenseModal';
 import EditExpenseModal from '../components/EditExpenseModal';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import ExpenseDetailModal from '../components/ExpenseDetailModal';
+import ExpenseChart from '../components/ExpenseChart';
 
 const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -212,6 +213,65 @@ const Dashboard: React.FC = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total Expenses</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalExpenses}</p>
+              </div>
+              <div className="bg-blue-100 p-3 rounded-lg">
+                <Receipt className="h-6 w-6 text-blue-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total Amount</p>
+                <p className="text-2xl font-bold text-gray-900">৳{stats.totalAmount.toFixed(2)}</p>
+              </div>
+              <div className="bg-green-100 p-3 rounded-lg">
+                <DollarSign className="h-6 w-6 text-green-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">This Month</p>
+                <p className="text-2xl font-bold text-gray-900">৳{stats.monthlyTotal.toFixed(2)}</p>
+              </div>
+              <div className="bg-purple-100 p-3 rounded-lg">
+                <Calendar className="h-6 w-6 text-purple-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Categories</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.categoriesCount}</p>
+              </div>
+              <div className="bg-orange-100 p-3 rounded-lg">
+                <TrendingUp className="h-6 w-6 text-orange-600" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Charts */}
+        {expenses.length > 0 && (
+          <div className="bg-white rounded-lg shadow p-6 mb-8">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Spending Overview</h2>
+            <ExpenseChart expenses={expenses} />
+          </div>
+        )}
+
         {/* Expenses Section */}
         <div className="bg-white rounded-lg shadow">
           <div className="p-6 border-b border-gray-200">
