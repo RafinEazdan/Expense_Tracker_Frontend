@@ -61,7 +61,7 @@ Hosted on **Vercel**
 ## 📋 Prerequisites
 
 - Node.js 18+ and npm
-- Backend API running on `http://localhost:5000`
+- Backend API running on `https://expense-tracker-r3tn.onrender.com` (or `http://localhost:5000` for local development)
 
 ## 🔧 Installation & Setup
 
@@ -104,7 +104,7 @@ src/
 
 ## 🔌 API Integration
 
-The frontend integrates with the backend API at `http://localhost:5000`:
+The frontend integrates with the backend API at `https://expense-tracker-r3tn.onrender.com`:
 
 ### Authentication Endpoints
 - `POST /users` - Register new user
@@ -188,7 +188,8 @@ The frontend integrates with the backend API at `http://localhost:5000`:
 
 ## 🤝 Integration Notes
 
-- Backend must be running on `http://localhost:5000`
+- Backend is deployed on Render at `https://expense-tracker-r3tn.onrender.com`
+- For local development, update `API_BASE_URL` in `src/lib/api.ts` to `http://localhost:5000`
 - CORS is configured on the backend
 - Token expiration is handled automatically
 - User data is filtered by owner_id on the backend
@@ -199,4 +200,4 @@ This project is part of the Expense Tracker application suite.
 
 ---
 
-**Note:** Make sure the backend API is running before starting the frontend application.
+**Note:** The application is configured to use the production backend at `https://expense-tracker-r3tn.onrender.com`. For local development, update the API_BASE_URL in `src/lib/api.ts`.
