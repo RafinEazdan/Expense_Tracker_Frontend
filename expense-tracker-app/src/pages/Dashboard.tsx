@@ -17,6 +17,7 @@ import {
   DollarSign,
   Receipt,
   Calendar,
+  Sparkles,
 } from 'lucide-react';
 import AddExpenseModal from '../components/AddExpenseModal';
 import EditExpenseModal from '../components/EditExpenseModal';
@@ -37,7 +38,10 @@ const Dashboard: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showStoryModal, setShowStoryModal] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+  const [story, setStory] = useState<string>('');
+  const [loadingStory, setLoadingStory] = useState(false);
 
   useEffect(() => {
     fetchExpenses();
@@ -109,6 +113,27 @@ const Dashboard: React.FC = () => {
   const openDetailModal = (expense: Expense) => {
     setSelectedExpense(expense);
     setShowDetailModal(true);
+  };
+
+  const handleGenerateStory = async () => {
+    if (expenses.length === 0) {
+      toast.warning('Add some expenses first to generate a story!');
+      return;
+    }
+
+    setLoadingStory(true);
+    setShowStoryModal(true);
+    setStory('');
+
+    try {
+      const generatedStory = await expensesApi.generateStory();
+      setStory(generatedStory);
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || 'Failed to generate story');
+      setShowStoryModal(false);
+    } finally {
+      setLoadingStory(false);
+    }
   };
 
   // Filter and sort expenses
@@ -277,13 +302,23 @@ const Dashboard: React.FC = () => {
           <div className="p-6 border-b border-gray-200">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
               <h2 className="text-lg font-semibold text-gray-900">Your Expenses</h2>
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="flex items-center justify-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-              >
-                <Plus className="h-5 w-5" />
-                <span>Add Expense</span>
-              </button>
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                <button
+                  onClick={handleGenerateStory}
+                  disabled={expenses.length === 0}
+                  className="flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Sparkles className="h-5 w-5" />
+                  <span>Generate Story</span>
+                </button>
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="flex items-center justify-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                >
+                  <Plus className="h-5 w-5" />
+                  <span>Add Expense</span>
+                </button>
+              </div>
             </div>
 
             {/* Filters and Search */}
@@ -458,6 +493,59 @@ const Dashboard: React.FC = () => {
             openDeleteModal(selectedExpense);
           }}
         />
+      )}
+
+      {/* Story Modal */}
+      {showStoryModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-gray-900 flex items-center space-x-2">
+                  <Sparkles className="h-6 w-6 text-purple-600" />
+                  <span>Your Expense Story</span>
+                </h2>
+                <button
+                  onClick={() => setShowStoryModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {loadingStory ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
+                  <p className="text-gray-600">Crafting your unique expense story...</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-200">
+                    <p className="text-lg text-gray-800 leading-relaxed whitespace-pre-wrap">
+                      {story}
+                    </p>
+                  </div>
+                  <div className="flex justify-end space-x-3">
+                    <button
+                      onClick={handleGenerateStory}
+                      className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                    >
+                      Generate New Story
+                    </button>
+                    <button
+                      onClick={() => setShowStoryModal(false)}
+                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

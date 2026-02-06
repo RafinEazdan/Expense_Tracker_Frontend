@@ -119,4 +119,9 @@ export const expensesApi = {
   delete: async (id: number): Promise<void> => {
     await api.delete(`/expenses/${id}`);
   },
+
+  generateStory: async (): Promise<string> => {
+    const response = await api.get('/llm/analysis/story');
+    return response.data;
+  },
 };
