@@ -28,8 +28,40 @@ const ExpenseChart: React.FC<ExpenseChartProps> = ({ expenses }) => {
     }))
     .sort((a, b) => b.value - a.value);
 
-  const renderLabel = (entry: any) => {
-    return `${entry.name}: ৳${entry.value.toFixed(2)}`;
+  const RADIAN = Math.PI / 180;
+  const renderLabel = (props: any) => {
+    const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props ?? {};
+    if (
+      cx == null ||
+      cy == null ||
+      midAngle == null ||
+      innerRadius == null ||
+      outerRadius == null ||
+      percent == null
+    ) {
+      return null;
+    }
+
+    // Hide labels for tiny slices to prevent overlap.
+    if (percent < 0.06) return null;
+
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.55;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="#ffffff"
+        textAnchor={x > cx ? 'start' : 'end'}
+        dominantBaseline="central"
+        fontSize={12}
+        fontWeight={600}
+      >
+        {`${Math.round(percent * 100)}%`}
+      </text>
+    );
   };
 
   return (
@@ -42,7 +74,7 @@ const ExpenseChart: React.FC<ExpenseChartProps> = ({ expenses }) => {
             cy="50%"
             labelLine={false}
             label={renderLabel}
-            outerRadius={80}
+            outerRadius="75%"
             fill="#8884d8"
             dataKey="value"
           >
@@ -50,8 +82,8 @@ const ExpenseChart: React.FC<ExpenseChartProps> = ({ expenses }) => {
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
-          <Tooltip formatter={(value: any) => `৳${value.toFixed(2)}`} />
-          <Legend />
+          <Tooltip formatter={(value: any) => `৳${Number(value).toFixed(2)}`} />
+          <Legend wrapperStyle={{ fontSize: 12 }} />
         </PieChart>
       </ResponsiveContainer>
     </div>
