@@ -228,7 +228,14 @@ const Dashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Expense Tracker</h1>
+              <div className="flex items-center gap-3">
+                <img
+                  src="/Gemini_Generated_Image_nimtcmnimtcmnimt.png"
+                  alt="Expense Tracker"
+                  className="h-9 w-9 rounded-lg object-cover"
+                />
+                <h1 className="text-2xl font-bold text-gray-900">Expense Tracker</h1>
+              </div>
               <p className="text-sm text-gray-600">{user?.email}</p>
             </div>
             <div className="flex items-center space-x-4">
