@@ -2,7 +2,7 @@
 
 A complete, production-ready frontend MVP for an Expense Tracker application built with React, TypeScript, and Tailwind CSS.
 
-> **Built with GitHub Copilot Pro** using the **Claude Sonnet 4.5** AI model.
+> **Built with GitHub Copilot Pro**.
 
 This is the frontend representation of the backend project:  
 🔗 **Backend Repository:** [https://github.com/RafinEazdan/Expense_Tracker](https://github.com/RafinEazdan/Expense_Tracker)
@@ -23,12 +23,17 @@ Hosted on **Vercel**
 ### Expense Management
 - ✅ View all expenses in a responsive grid layout
 - ✅ Create new expenses with validation
+- ✅ Create expenses from natural language (AI-powered)
 - ✅ Edit existing expenses
 - ✅ Delete expenses with confirmation
 - ✅ View detailed expense information
 - ✅ Real-time filtering and searching
 - ✅ Sort by date, amount, or category
 - ✅ Category-based organization
+
+### AI / LLM Features
+- ✅ AI Add Expense: describe an expense and it auto-fills amount/category/description
+- ✅ Generate Story: get an LLM-generated narrative summary of your expenses
 
 ### Data Visualization
 - ✅ Interactive pie charts showing spending by category
@@ -65,14 +70,37 @@ Hosted on **Vercel**
 
 ## 🔧 Installation & Setup
 
-1. The project is already set up in the `expense-tracker-app` directory
+1. Go to the app directory:
 
-2. Start the development server:
+```bash
+cd expense-tracker-app
+```
+
+2. Create an environment file and point it to your backend:
+
+```bash
+echo "VITE_API_BASE_URL=http://localhost:5000" > .env
+```
+
+If you want to use the deployed backend instead:
+
+```bash
+echo "VITE_API_BASE_URL=https://expense-tracker-r3tn.onrender.com" > .env
+```
+
+3. Install dependencies:
+
+```bash
+npm install
+```
+
+4. Start the development server:
+
 ```bash
 npm run dev
 ```
 
-3. Open your browser and navigate to:
+5. Open your browser and navigate to:
 ```
 http://localhost:5173
 ```
@@ -83,6 +111,7 @@ http://localhost:5173
 src/
 ├── components/          # Reusable UI components
 │   ├── AddExpenseModal.tsx
+│   ├── AIExpenseModal.tsx
 │   ├── EditExpenseModal.tsx
 │   ├── DeleteConfirmModal.tsx
 │   ├── ExpenseDetailModal.tsx
@@ -119,12 +148,18 @@ The frontend integrates with the backend API at `https://expense-tracker-r3tn.on
 - `PUT /expenses/{id}` - Update expense
 - `DELETE /expenses/{id}` - Delete expense
 
+### LLM Endpoints
+- `POST /llm/sql-gen` - Create an expense from a natural language query
+- `GET /llm/analysis/story` - Generate an expense “story”
+
 ## 🎯 Usage Guide
 
 ### Getting Started
 1. **Register:** Create a new account with email and password
 2. **Login:** Sign in with your credentials
-3. **Add Expenses:** Click "Add Expense" to create your first expense
+3. **Add Expenses:**
+	- Click **Add Expense** to enter it manually
+	- Or click **AI Add Expense** and type something like: “I spent $25 on lunch”
 4. **View Dashboard:** See all your expenses, charts, and statistics
 5. **Manage Expenses:** Edit, view details, or delete expenses as needed
 6. **Profile:** View your profile information or delete your account
@@ -134,6 +169,8 @@ The frontend integrates with the backend API at `https://expense-tracker-r3tn.on
 - **Sort Options:** Sort expenses by date, amount, or category
 - **Charts:** View spending patterns with interactive pie charts
 - **Statistics:** Track total expenses, monthly spending, and category counts
+- **AI Add Expense:** Describe an expense in natural language and let AI create it
+- **Generate Story:** Create a narrative summary of your expenses
 
 ## 🎨 Design Features
 
@@ -189,7 +226,7 @@ The frontend integrates with the backend API at `https://expense-tracker-r3tn.on
 ## 🤝 Integration Notes
 
 - Backend is deployed on Render at `https://expense-tracker-r3tn.onrender.com`
-- For local development, update `API_BASE_URL` in `src/lib/api.ts` to `http://localhost:5000`
+- The frontend reads the API base URL from `VITE_API_BASE_URL` (see `expense-tracker-app/.env`)
 - CORS is configured on the backend
 - Token expiration is handled automatically
 - User data is filtered by owner_id on the backend
