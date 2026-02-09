@@ -124,4 +124,9 @@ export const expensesApi = {
     const response = await api.get('/llm/analysis/story');
     return response.data;
   },
+
+  createWithLLM: async (query: string): Promise<Expense> => {
+    const response = await api.post('/llm/sql-gen', { query });
+    return response.data;
+  },
 };

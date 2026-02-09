@@ -24,6 +24,7 @@ import EditExpenseModal from '../components/EditExpenseModal';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import ExpenseDetailModal from '../components/ExpenseDetailModal';
 import ExpenseChart from '../components/ExpenseChart';
+import AIExpenseModal from '../components/AIExpenseModal';
 
 const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -35,6 +36,7 @@ const Dashboard: React.FC = () => {
   const [sortBy, setSortBy] = useState<'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc' | 'category'>('date-desc');
   
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showAIModal, setShowAIModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -73,6 +75,18 @@ const Dashboard: React.FC = () => {
       fetchExpenses();
     } catch (error: any) {
       toast.error(error.response?.data?.detail || 'Failed to add expense');
+    }
+  };
+
+  const handleAIExpense = async (query: string) => {
+    try {
+      await expensesApi.createWithLLM(query);
+      toast.success('✨ AI created your expense successfully!');
+      setShowAIModal(false);
+      fetchExpenses();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || 'Failed to create expense with AI');
+      throw error;
     }
   };
 
@@ -312,6 +326,13 @@ const Dashboard: React.FC = () => {
                   <span>Generate Story</span>
                 </button>
                 <button
+                  onClick={() => setShowAIModal(true)}
+                  className="flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
+                >
+                  <Sparkles className="h-5 w-5" />
+                  <span>AI Add Expense</span>
+                </button>
+                <button
                   onClick={() => setShowAddModal(true)}
                   className="flex items-center justify-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
                 >
@@ -452,6 +473,13 @@ const Dashboard: React.FC = () => {
         <AddExpenseModal
           onClose={() => setShowAddModal(false)}
           onSubmit={handleAddExpense}
+        />
+      )}
+
+      {showAIModal && (
+        <AIExpenseModal
+          onClose={() => setShowAIModal(false)}
+          onSubmit={handleAIExpense}
         />
       )}
 
