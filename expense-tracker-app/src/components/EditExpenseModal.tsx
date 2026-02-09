@@ -26,10 +26,17 @@ interface FormData {
   amount: string;
   category: string;
   description: string;
+  customCategory: string;
 }
 
 const EditExpenseModal: React.FC<EditExpenseModalProps> = ({ expense, onClose, onSubmit }) => {
   const [loading, setLoading] = useState(false);
+  
+  // Check if the current category is a standard one or custom
+  const isStandardCategory = CATEGORIES.includes(expense.category);
+  const initialCategory = isStandardCategory ? expense.category : 'Other';
+  const initialCustomCategory = !isStandardCategory ? expense.category : '';
+  
   const {
     register,
     handleSubmit,
@@ -38,19 +45,27 @@ const EditExpenseModal: React.FC<EditExpenseModalProps> = ({ expense, onClose, o
   } = useForm<FormData>({
     defaultValues: {
       amount: expense.amount.toString(),
-      category: expense.category,
+      category: initialCategory,
       description: expense.description || '',
+      customCategory: initialCustomCategory,
     },
   });
 
   const description = watch('description') || '';
+  const category = watch('category');
+  const customCategory = watch('customCategory') || '';
 
   const onSubmitForm = async (data: FormData) => {
     setLoading(true);
     try {
+      // If category is "Other" and customCategory is provided, use custom text; otherwise use "Other"
+      const finalCategory = data.category === 'Other' && data.customCategory?.trim()
+        ? data.customCategory.trim()
+        : data.category;
+      
       await onSubmit({
         amount: parseFloat(data.amount),
-        category: data.category,
+        category: finalCategory,
         description: data.description || '',
       });
     } finally {
@@ -125,6 +140,35 @@ const EditExpenseModal: React.FC<EditExpenseModalProps> = ({ expense, onClose, o
               <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>
             )}
           </div>
+
+          {/* Custom Category (only shown when "Other" is selected) */}
+          {category === 'Other' && (
+            <div>
+              <label htmlFor="customCategory" className="block text-sm font-medium text-gray-700 mb-1">
+                Custom Category (optional)
+              </label>
+              <input
+                {...register('customCategory', {
+                  maxLength: {
+                    value: 50,
+                    message: 'Category name must be less than 50 characters',
+                  },
+                })}
+                type="text"
+                id="customCategory"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"
+                placeholder="Enter custom category name"
+              />
+              <div className="flex justify-between items-center mt-1">
+                {errors.customCategory && (
+                  <p className="text-sm text-red-600">{errors.customCategory.message}</p>
+                )}
+                <p className="text-xs text-gray-500 ml-auto">
+                  {customCategory.length}/50
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Description */}
           <div>
